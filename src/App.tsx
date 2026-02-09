@@ -10,7 +10,7 @@ import {
   Chip,
   Spinner,
 } from "@heroui/react";
-import {addToast} from "@heroui/react";
+import { addToast } from "@heroui/react";
 import {
   Modal,
   ModalContent,
@@ -22,9 +22,11 @@ import {
 import { Form, Input } from "@heroui/react";
 import { DatePicker } from "@heroui/react";
 import { parseDate } from "@internationalized/date";
-
+import { Popover, PopoverTrigger, PopoverContent } from "@heroui/react";
+import { Link } from "@heroui/react";
 import React from "react";
-import { CheckIcon, DeleteIcon, EditIcon, EyeIcon, SearchIcon } from "./components/icons";
+
+import { AnchorIcon, CheckIcon, DeleteIcon, EditIcon, SearchIcon } from "./components/icons";
 import { Task, UpdateTaskPayload } from "./service";
 import taskService from "./service";
 import { Checkbox } from "@heroui/react";
@@ -123,7 +125,23 @@ export default function TaskTable() {
     const data = (task as any)[columnKey as string];
     switch (columnKey) {
       case "task_id":
-        return <span className="font-medium">{data}</span>;
+        return (
+          <Popover placement="bottom" showArrow={true} backdrop="opaque" offset={10}>
+            <PopoverTrigger>
+              <span className="font-medium cursor-pointer">{data}</span>
+            </PopoverTrigger>
+            <PopoverContent className="py-3 px-2">
+              <div className="flex flex-col">
+                <a href={`https://sha.backlog.jp/view/${data}`} className="flex items-center gap-x-1 text-blue-600 hover:text-blue-800 transition duration-150 hover:bg-gray-100 px-2 py-2 rounded-md" target="_blank">
+                  <AnchorIcon /> Backlog 
+                </a>
+                <a href={`https://proj-mgmt.miraisoft.com.vn/work_packages/${String(task.mgmt_code)}/activity`} className="flex items-center gap-x-1 text-blue-600 hover:text-blue-800 transition duration-150 hover:bg-gray-100 px-2 py-2 rounded-md" target="_blank">
+                  <AnchorIcon /> Tool Project
+                </a>
+              </div>
+            </PopoverContent>
+          </Popover>
+        )
       case "coding":
       case "local_test":
       case "develop_test":
@@ -144,17 +162,8 @@ export default function TaskTable() {
       case "actions":
         return (
           <div className="relative flex items-center gap-2">
-            <Tooltip content="Details">
-              <span className="text-lg text-default-400 cursor-pointer active:opacity-50" onClick={async () => {
-                setAction("view_item");
-                let detailItem = await getDetailItem(task.task_id);
-                setDetailItem(detailItem);
-              }}>
-                <EyeIcon />
-              </span>
-            </Tooltip>
             <Tooltip content="Edit task" placement="top">
-              <span className="text-lg text-default-400 cursor-pointer active:opacity-50" onClick={async () => {
+              <span className="text-lg text-purple-600 cursor-pointer active:opacity-50" onClick={async () => {
                 setAction("edit_item");
                 let detailItem = await getDetailItem(task.task_id);
                 setDetailItem(detailItem);
@@ -182,14 +191,14 @@ export default function TaskTable() {
       default:
         return data;
     }
-  },[]);
+  }, []);
 
   return (
     <div className="container mx-auto mt-5">
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-5">
         <div className="md:col-span-10 grid grid-cols-2">
           <div>
-            <h1 className="text-2xl font-bold mb-2">Task Management</h1>
+            <h1 className="text-2xl font-bold mb-2 text-purple-600">Task Management</h1>
             <p className="text-muted-foreground-1">
               Manage and track tasks
             </p>
@@ -207,11 +216,11 @@ export default function TaskTable() {
                   fetchTasks(1);
                 }}
               />
-              <Button size="md" className="px-4" onClick={() => {
+              <Button color="secondary" size="md" className="px-4" onClick={() => {
                 fetchTasks(1);
               }}>Search</Button>
             </div>
-            <Button size="md" className="px-4" onClick={() => {
+            <Button color="secondary" size="md" className="px-4" onClick={() => {
               setAction("create_new");
               setDetailItem(null);
               onOpen();
@@ -229,6 +238,7 @@ export default function TaskTable() {
                   page={page}
                   total={totalPages}
                   onChange={setPage}
+                  color="secondary"
                 />
               </div>
             ) : null
@@ -254,8 +264,8 @@ export default function TaskTable() {
             )}
           </TableBody>
         </Table>
-        <div className="md:col-span-2">
-          <h2 className="text-2xl font-mono font-bold mb-2">Analysis Summary</h2>
+        <div className="md:col-span-2 shadow-md border border-gray-200 rounded-xl p-3">
+          <h2 className="text-2xl font-mono font-bold mb-2 text-purple-600">Analysis Summary</h2>
           <div className="border-b border-gray-200 pb-1">
             <span className="mb-3 font-medium text-xl text-muted-foreground-1 font-mono">Coding</span>
             <ul className="list-disc list-inside text-foreground">
@@ -378,7 +388,7 @@ export default function TaskTable() {
                 >
                   <div className="grid grid-cols-2 gap-4 w-full">
                     <Input isRequired errorMessage="Please enter a valid task Id" label="Task ID" labelPlacement="outside" name="task_id" placeholder="LOWCODE-XXXX" type="text" defaultValue={detailItem?.task_id || ""} />
-                    <Input isRequired errorMessage="Please enter Tool Code" label="Tool Code" labelPlacement="outside" name="mgmt_code" placeholder="XXXX" type="text" defaultValue={String(detailItem?.mgmt_code) || ""} />
+                    <Input isRequired errorMessage="Please enter Tool Code" label="Tool Code" labelPlacement="outside" name="mgmt_code" placeholder="XXXX" type="text" defaultValue={String(detailItem?.mgmt_code || "") || ""} />
                   </div>
                   {
                     action !== "create_new" && (
