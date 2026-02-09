@@ -7,6 +7,7 @@ import os
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
 from datetime import datetime
+import uvicorn
 
 load_dotenv()
 
@@ -33,7 +34,7 @@ collection = db[COLLECTION_NAME]
 
 
 class TaskSchema(BaseModel):
-    task_id: str = Field(..., example="LOWCODE-2073")
+    task_id: str
     coding: int
     local_test: int
     develop_test: int
@@ -212,3 +213,11 @@ async def task_analysis():
         },
         "total": get_count("total")
     }
+
+if __name__ == "__main__":
+    uvicorn.run(
+        "main:app",
+        host="0.0.0.0",
+        port=int(os.environ.get("PORT", 9090)),
+        reload=False
+    )
