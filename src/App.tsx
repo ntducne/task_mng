@@ -23,7 +23,6 @@ import { Form, Input } from "@heroui/react";
 import { DatePicker } from "@heroui/react";
 import { parseDate } from "@internationalized/date";
 import { Popover, PopoverTrigger, PopoverContent } from "@heroui/react";
-import { Link } from "@heroui/react";
 import React from "react";
 
 import { AnchorIcon, CheckIcon, DeleteIcon, EditIcon, SearchIcon } from "./components/icons";
