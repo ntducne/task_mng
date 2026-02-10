@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Table,
   TableHeader,
@@ -9,6 +10,7 @@ import {
   Tooltip,
   Chip,
   Spinner,
+  DropdownSection,
 } from "@heroui/react";
 import { addToast } from "@heroui/react";
 import {
@@ -21,14 +23,14 @@ import {
 } from "@heroui/react";
 import { Form, Input } from "@heroui/react";
 import { DatePicker } from "@heroui/react";
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@heroui/react";
+import { Checkbox } from "@heroui/react";
+
 import { parseDate } from "@internationalized/date";
-import { Popover, PopoverTrigger, PopoverContent } from "@heroui/react";
-import React from "react";
 
 import { AnchorIcon, CheckIcon, DeleteIcon, EditIcon, SearchIcon } from "./components/icons";
 import { Task, UpdateTaskPayload } from "./service";
 import taskService from "./service";
-import { Checkbox } from "@heroui/react";
 
 export default function TaskTable() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -125,21 +127,17 @@ export default function TaskTable() {
     switch (columnKey) {
       case "task_id":
         return (
-          <Popover placement="bottom" showArrow={true} backdrop="opaque" offset={10}>
-            <PopoverTrigger>
+          <Dropdown backdrop="opaque">
+            <DropdownTrigger>
               <span className="font-medium cursor-pointer">{data}</span>
-            </PopoverTrigger>
-            <PopoverContent className="py-3 px-2">
-              <div className="flex flex-col">
-                <a href={`https://sha.backlog.jp/view/${data}`} className="flex items-center gap-x-1 text-blue-600 hover:text-blue-800 transition duration-150 hover:bg-gray-100 px-2 py-2 rounded-md" target="_blank">
-                  <AnchorIcon /> Backlog 
-                </a>
-                <a href={`https://proj-mgmt.miraisoft.com.vn/work_packages/${String(task.mgmt_code)}/activity`} className="flex items-center gap-x-1 text-blue-600 hover:text-blue-800 transition duration-150 hover:bg-gray-100 px-2 py-2 rounded-md" target="_blank">
-                  <AnchorIcon /> Tool Project
-                </a>
-              </div>
-            </PopoverContent>
-          </Popover>
+            </DropdownTrigger>
+            <DropdownMenu aria-label="Actions">
+              <DropdownSection title={`${data} (#${String(task.mgmt_code)})`}>
+                <DropdownItem startContent={<AnchorIcon />} key="backlog" href={`https://sha.backlog.jp/view/${data}`} target="_blank"> Backlog </DropdownItem>
+                <DropdownItem startContent={<AnchorIcon />} key="tool" href={`https://proj-mgmt.miraisoft.com.vn/work_packages/${String(task.mgmt_code)}/activity`} target="_blank">Project Tool</DropdownItem>
+              </DropdownSection>
+            </DropdownMenu>
+          </Dropdown>
         )
       case "coding":
       case "local_test":
