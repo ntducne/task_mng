@@ -63,6 +63,12 @@ export default function TaskTable() {
       const res = await taskService.getTasks(page, rowsPerPage, searchValue);
       setTasks(res.data);
       setTotalPages(res.total_pages);
+    } catch(e) {
+        addToast({
+          title: "Error !",
+          description: "Fetching Items Fail !!!",
+          color: "danger",
+        })
     } finally {
       setLoading(false);
     }
@@ -72,6 +78,13 @@ export default function TaskTable() {
     try {
       setLoading(true);
       await taskService.createTask(item);
+      await getAnalysisData();
+    } catch(e) {
+        addToast({
+          title: "Error !",
+          description: "Create Item Fail !!!",
+          color: "danger",
+        })
     } finally {
       setLoading(false);
     }
@@ -83,6 +96,13 @@ export default function TaskTable() {
       if (item.task_id) {
         await taskService.updateTask(item.task_id, item);
       }
+      await getAnalysisData();
+    } catch(e){
+      addToast({
+        title: "Error !",
+        description: "Update Item Fail !!!",
+        color: "danger",
+      })
     } finally {
       setLoading(false);
     }
@@ -92,6 +112,13 @@ export default function TaskTable() {
     try {
       setLoading(true);
       await taskService.deleteTask(taskId);
+      await getAnalysisData();
+    } catch(e){
+      addToast({
+        title: "Error !",
+        description: "Delete Item Fail !!!",
+        color: "danger",
+      })
     } finally {
       setLoading(false);
     }
@@ -102,6 +129,12 @@ export default function TaskTable() {
       setLoading(true);
       const res = await taskService.getTaskById(taskId);
       return res;
+    } catch(e){
+      addToast({
+        title: "Error !",
+        description: "Get Detail Item Fail !!!",
+        color: "danger",
+      })
     } finally {
       setLoading(false);
     }
@@ -163,8 +196,10 @@ export default function TaskTable() {
               <span className="text-lg text-purple-600 cursor-pointer active:opacity-50" onClick={async () => {
                 setAction("edit_item");
                 let detailItem = await getDetailItem(task.task_id);
-                setDetailItem(detailItem);
-                onOpen();
+                if(detailItem){
+                  setDetailItem(detailItem);
+                  onOpen();
+                }
               }}>
                 <EditIcon />
               </span>
