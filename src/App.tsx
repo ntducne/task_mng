@@ -197,9 +197,9 @@ export default function TaskTable() {
       case "production_test":
         return (
           data == 1 ? (
-            <Chip color="success" startContent={<CheckIcon size={18} />} variant="faded">Done</Chip>
+            <Chip className="text-xs" color="success" startContent={<CheckIcon size={18} />} variant="faded">Done</Chip>
           ) : (
-            <Chip className="text-sm">Waiting</Chip>
+            <Chip className="text-xs">Waiting</Chip>
           )
         )
       case "deploy_date":
@@ -445,18 +445,18 @@ export default function TaskTable() {
                             <p>Status</p>
                             <div className="grid grid-cols-2">
                               <div>
-                                <Checkbox name="coding" value="1" defaultSelected={detailItem?.coding === 1}>
+                                <Checkbox color="secondary" name="coding" value="1" defaultSelected={detailItem?.coding === 1}>
                                   Coding
                                 </Checkbox>
-                                <Checkbox name="local_test" value="1" defaultSelected={detailItem?.local_test === 1}>
+                                <Checkbox color="secondary" name="local_test" value="1" defaultSelected={detailItem?.local_test === 1}>
                                   Local Test
                                 </Checkbox>
                               </div>
                               <div>
-                                <Checkbox name="develop_test" value="1" defaultSelected={detailItem?.develop_test === 1}>
+                                <Checkbox color="secondary" name="develop_test" value="1" defaultSelected={detailItem?.develop_test === 1}>
                                   Dev Test
                                 </Checkbox>
-                                <Checkbox name="production_test" value="1" defaultSelected={detailItem?.production_test === 1}>
+                                <Checkbox color="secondary" name="production_test" value="1" defaultSelected={detailItem?.production_test === 1}>
                                   Prod Test
                                 </Checkbox>
                               </div>
@@ -473,7 +473,7 @@ export default function TaskTable() {
                       <Button color="danger" variant="bordered" onPress={onClose}>
                         Cancel
                       </Button>
-                      <Button color="primary" type="submit">
+                      <Button color="secondary" type="submit">
                         Save
                       </Button>
                     </div>
